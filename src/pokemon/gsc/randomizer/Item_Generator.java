@@ -15,9 +15,10 @@ public class Item_Generator {
     int[] invalidItems;
     int index;
     Random random;
-    
-    
-    public Item_Generator(){
+
+
+    public Item_Generator(Random randomInstance){
+        this.random = randomInstance;
         invalidItems = new int[45];
         //Empty spaces
         invalidItems[0] = 0x06;
@@ -66,9 +67,9 @@ public class Item_Generator {
         invalidItems[42] = 0x86;
         invalidItems[43] = 0xAF;
         invalidItems[44] = 0xB2;
-        random = new Random();
+        // random = new Random(); // Removed: Instance is now injected
     }
-    
+
     public int insertItem(){
         boolean goodNumber = false;
         int d = 0;

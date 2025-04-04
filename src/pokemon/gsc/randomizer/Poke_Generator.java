@@ -13,12 +13,13 @@ import java.util.Random;
 public class Poke_Generator {
     int lastSafePoke = 0xFB;
     Random random;
-    
-    
-    public Poke_Generator(){
-        random = new Random();
+
+
+    public Poke_Generator(Random randomInstance){
+        this.random = randomInstance;
+        // random = new Random(); // Removed: Instance is now injected
     }
-    
+
     public int insertPoke(){
         int d = random.nextInt(lastSafePoke)+1;
         return d;

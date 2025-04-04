@@ -12,8 +12,9 @@ import java.util.Random;
  */
 public class Name_Generator {
     Random random;
-    public Name_Generator(){
-        random = new Random();
+    public Name_Generator(Random randomInstance){
+        this.random = randomInstance;
+        // random = new Random(); // Removed: Instance is now injected
     }
     public byte[] generateName(int size){
         

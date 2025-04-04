@@ -15,9 +15,10 @@ public class TM_Generator {
     int[] movesPicked;
     int index;
     Random random;
-    
-    
-    public TM_Generator(){
+
+
+    public TM_Generator(Random randomInstance){
+        this.random = randomInstance;
         movesPicked = new int[57];
         movesPicked[0] = 0xFA;
         movesPicked[1] = 0x7F;
@@ -26,10 +27,10 @@ public class TM_Generator {
         movesPicked[4] = 0x46;
         movesPicked[5] = 0x13;
         movesPicked[6] = 0x0F;
-        random = new Random();
+        // random = new Random(); // Removed: Instance is now injected
         index = 7;
     }
-    
+
     public int insertTM(){
         boolean goodNumber = false;
         int d = 0;

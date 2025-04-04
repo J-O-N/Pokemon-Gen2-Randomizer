@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Random; // Added import
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -36,7 +37,8 @@ import javax.swing.border.TitledBorder;
 
 
 public class GeneratorPanel extends JPanel implements ItemListener, ActionListener{
-    
+
+    private Random random; // Added Random instance field
     public int gameVersion;
     public int[] starters;
     public byte[] fileArray;
@@ -61,11 +63,13 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
     JButton openROM, saveROM, close;
     JFrame confirm;
     JLabel confirmText;
-    
+
     public GeneratorPanel(){
+        this.random = new Random(); // Initialize Random instance
+
         //setPreferredSize(new Dimension(600, 400));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
+
         //Invisible confirmation window.
         confirm = new JFrame("Rom randomization complete.");
         confirm.setLayout(new BoxLayout(confirm.getContentPane(), BoxLayout.Y_AXIS));
@@ -282,14 +286,14 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
         StarterPanel.add(StarterItems);
         StarterPanel.add(StarterItemsKeys);
         
-        
+
         starters = new int[3];
-        TMGen = new TM_Generator();
-        PokeGen = new Poke_Generator();
-        NameGen = new Name_Generator();
-        ItemGen = new Item_Generator();
+        TMGen = new TM_Generator(this.random); // Pass random instance
+        PokeGen = new Poke_Generator(this.random); // Pass random instance
+        NameGen = new Name_Generator(this.random); // Pass random instance
+        ItemGen = new Item_Generator(this.random); // Pass random instance
         offset = 0x0;
-        
+
         //Done with the initialization.
     }
     public void openROM(){
