@@ -37,7 +37,7 @@ import javax.swing.border.TitledBorder;
  */
 
 
-public class GeneratorPanel extends JPanel { // Removed implements ItemListener, ActionListener
+public class Generator extends JPanel { // Renamed class from GeneratorPanel to Generator
 
     private Random random; // Added Random instance field
     public int gameVersion;
@@ -81,7 +81,7 @@ public class GeneratorPanel extends JPanel { // Removed implements ItemListener,
     // JButton close;
 
 
-    public GeneratorPanel(){
+    public Generator(){
         // No UI initialization here anymore
 
         starters = new int[3];

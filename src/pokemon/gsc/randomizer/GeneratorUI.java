@@ -22,11 +22,11 @@ public class GeneratorUI extends JPanel implements ItemListener, ActionListener 
     JTextField seedField;
 
     // Reference to the core logic
-    private GeneratorPanel generatorLogic; // Now instantiated here
+    private Generator generatorLogic; // Renamed from GeneratorPanel
 
     public GeneratorUI() {
         // Instantiate the logic class
-        this.generatorLogic = new GeneratorPanel();
+        this.generatorLogic = new Generator(); // Renamed from GeneratorPanel
 
         // Set the layout for this panel (GeneratorUI)
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
