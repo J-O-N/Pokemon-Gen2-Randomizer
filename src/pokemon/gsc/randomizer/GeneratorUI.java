@@ -297,7 +297,7 @@ public class GeneratorUI extends JPanel implements ItemListener, ActionListener 
                  System.out.println("No seed provided, generated: " + seed);
              }
 
-             File saveFile = generatorLogic.randomizeROM(seed); // Call logic class method with seed
+             File saveFile = generatorLogic.randomizeROM(seed, ""); // Call logic class method with seed
 
              // Show confirmation dialog
              if (saveFile != null) {

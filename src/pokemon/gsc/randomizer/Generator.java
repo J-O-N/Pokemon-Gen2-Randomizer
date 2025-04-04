@@ -149,18 +149,20 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
     }
 
     // Modified to accept seed and return save path for confirmation dialog
-    public File randomizeROM(long seed){
+    public File randomizeROM(long seed, String outputFile){
         initializeGenerators(seed); // Pass the seed
 
         if(gameVersion == 0){
             ByteArrayOutputStream oStream = randomizeForGold(); // randomizeForGold now uses the initialized generators
             System.out.println("Randomized Gold.");
-            return saveROM(oStream, "RenameMe.gbc"); // Return the save file path
+            outputFile = !outputFile.isEmpty() ? outputFile : "RenameMe.gbc";
+            return saveROM(oStream, outputFile); // Return the save file path
         }
         if(gameVersion == 1){
             ByteArrayOutputStream oStream = randomizeForCrystal(); // randomizeForCrystal now uses the initialized generators
             System.out.println("Randomized Crystal.");
-            return saveROM(oStream, "RenameMeCrystal.gbc"); // Return the save file path
+            outputFile = !outputFile.isEmpty() ? outputFile : "RenameMeCrystal.gbc";
+            return saveROM(oStream, outputFile); // Return the save file path
         }
         return null; // Should not happen if gameVersion is set correctly
     }
