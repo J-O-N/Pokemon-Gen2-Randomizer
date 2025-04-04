@@ -50,7 +50,6 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
     public Poke_Generator PokeGen;
     public Name_Generator NameGen;
     public Item_Generator ItemGen;
-    public File save;
 
     // UI Stuff moved to GeneratorUI
     // JPanel area1, area2, area3, area4, area5, TMPanel, GamePanel, PokePanel, TrainerPanel, StarterPanel;
@@ -154,16 +153,36 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
         initializeGenerators(seed); // Pass the seed
 
         if(gameVersion == 0){
-            randomizeForGold(); // randomizeForGold now uses the initialized generators
+            ByteArrayOutputStream oStream = randomizeForGold(); // randomizeForGold now uses the initialized generators
             System.out.println("Randomized Gold.");
-            return save; // Return the save file path
+            return saveROM(oStream, "RenameMe.gbc"); // Return the save file path
         }
         if(gameVersion == 1){
-            randomizeForCrystal(); // randomizeForCrystal now uses the initialized generators
+            ByteArrayOutputStream oStream = randomizeForCrystal(); // randomizeForCrystal now uses the initialized generators
             System.out.println("Randomized Crystal.");
-            return save; // Return the save file path
+            return saveROM(oStream, "RenameMeCrystal.gbc"); // Return the save file path
         }
         return null; // Should not happen if gameVersion is set correctly
+    }
+
+    public File saveROM(ByteArrayOutputStream oStream, String outputFile) {
+        File save = new File(outputFile);
+        if(save.exists()){ //Save exists - Purge it.
+            try{
+                save.delete();
+            }catch(Throwable t){
+                //
+            }
+        }
+        try{
+            save.createNewFile();
+            OutputStream oStream2 = new FileOutputStream(save);
+            oStream.writeTo(oStream2);
+            System.out.println(save.getAbsolutePath());
+        }catch(Throwable t){
+            return null;
+        }
+        return save;
     }
 
     // ActionListener removed entirely
@@ -223,7 +242,7 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
         ItemGen = new Item_Generator(this.random);
     }
 
-    private void randomizeForGold() {
+    private ByteArrayOutputStream randomizeForGold() {
         // initializeGenerators(seed) is now called by randomizeROM(seed)
 
         //Select the starters, but let's not have two of the same starter.
@@ -1426,25 +1445,10 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
         
         //Write the new ROM.
         oStream.write(fileArray, offset, fileArray.length - offset);
-        save = new File("RenameMe.gbc");
-        if(save.exists()){ //Save exists - Purge it.
-            try{
-                save.delete();
-            }catch(Throwable t){
-                //
-            }
-        }
-        try{
-            save.createNewFile();
-            OutputStream oStream2 = new FileOutputStream(save);
-            oStream.writeTo(oStream2);
-            System.out.println(save.getAbsolutePath());
-        }catch(Throwable t){
-            //
-        }
+        return oStream;
     }
 
-    public void randomizeForCrystal(){
+    public ByteArrayOutputStream randomizeForCrystal(){
          // initializeGenerators(seed) is now called by randomizeROM(seed)
 
         //Select the starters, but let's not have two of the same starter.
@@ -2677,21 +2681,6 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
         
         //Write the new ROM.
         oStream.write(fileArray, offset, fileArray.length - offset);
-        save = new File("RenameMeCrystal.gbc");
-        if(save.exists()){ //Save exists - Purge it.
-            try{
-                save.delete();
-            }catch(Throwable t){
-                //
-            }
-        }
-        try{
-            save.createNewFile();
-            OutputStream oStream2 = new FileOutputStream(save);
-            oStream.writeTo(oStream2);
-            System.out.println(save.getAbsolutePath());
-        }catch(Throwable t){
-            //
-        }
+        return oStream;
     }
 }
