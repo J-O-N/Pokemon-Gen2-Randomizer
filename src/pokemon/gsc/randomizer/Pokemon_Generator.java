@@ -19,8 +19,9 @@ public class Pokemon_Generator {
                 //
             }
             JFrame frame = new JFrame(randomString());
-            GeneratorPanel panel = new GeneratorPanel();
-            frame.add(panel);
+            // Instantiate GeneratorUI instead of GeneratorPanel
+            GeneratorUI uiPanel = new GeneratorUI();
+            frame.add(uiPanel); // Add the UI panel
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
             frame.pack();

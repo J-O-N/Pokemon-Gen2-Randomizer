@@ -37,7 +37,7 @@ import javax.swing.border.TitledBorder;
  */
 
 
-public class GeneratorPanel extends JPanel implements ItemListener, ActionListener{
+public class GeneratorPanel extends JPanel { // Removed implements ItemListener, ActionListener
 
     private Random random; // Added Random instance field
     public int gameVersion;
@@ -51,251 +51,38 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
     public Name_Generator NameGen;
     public Item_Generator ItemGen;
     public File save;
-    
-    //UI Stuff.
-    JPanel area1, area2, area3, area4, area5, TMPanel, GamePanel, PokePanel, TrainerPanel, StarterPanel;
-    TitledBorder TMBorder, GameBorder, PokeBorder, TrainerBorder, StarterBorder;
-    JCheckBox TMCont, TMCompat, GamePokeGift, GameEventPoke, GameWildPoke, PokeStats, PokeTypes, PokeMovesets,
-            PokeLevels, PokeLevelsWild, PokeLevelsTrainer, PokeLevelsGifts, PokeTrade, TrainerRival, TrainerNames, TrainerPoke,
-            StarterStarters, StarterItems, StarterItemsKeys;
-    boolean BTMCont, BTMCompat, BGamePokeGift, BGameEventPoke, BGameWildPoke, BPokeStats, BPokeTypes, BPokeMovesets,
+
+    // UI Stuff moved to GeneratorUI
+    // JPanel area1, area2, area3, area4, area5, TMPanel, GamePanel, PokePanel, TrainerPanel, StarterPanel;
+    // TitledBorder TMBorder, GameBorder, PokeBorder, TrainerBorder, StarterBorder;
+    // JCheckBox TMCont, TMCompat, GamePokeGift, GameEventPoke, GameWildPoke, PokeStats, PokeTypes, PokeMovesets,
+    //         PokeLevels, PokeLevelsWild, PokeLevelsTrainer, PokeLevelsGifts, PokeTrade, TrainerRival, TrainerNames, TrainerPoke,
+    //         StarterStarters, StarterItems, StarterItemsKeys;
+    // boolean BTMCont, BTMCompat, BGamePokeGift, BGameEventPoke, BGameWildPoke, BPokeStats, BPokeTypes, BPokeMovesets,
+    //         BPokeLevels, BPokeLevelsWild, BPokeLevelsTrainer, BPokeLevelsGifts, BPokeTrade, BTrainerRival, BTrainerNames, BTrainerPoke,
+    //         BStarterStarters, BStarterItems, BStarterItemsKeys; // These boolean flags might need to stay or be handled differently
+    // JButton openROM, saveROM, close;
+    // JFrame confirm;
+    // JLabel confirmText, seedLabel;
+    // JTextField seedField;
+
+    // Keep boolean flags for now, GeneratorUI will need access
+    // Make public for now for GeneratorUI access (better encapsulation later)
+    public boolean BTMCont, BTMCompat, BGamePokeGift, BGameEventPoke, BGameWildPoke, BPokeStats, BPokeTypes, BPokeMovesets,
             BPokeLevels, BPokeLevelsWild, BPokeLevelsTrainer, BPokeLevelsGifts, BPokeTrade, BTrainerRival, BTrainerNames, BTrainerPoke,
             BStarterStarters, BStarterItems, BStarterItemsKeys;
-    JButton openROM, saveROM, close;
-    JFrame confirm;
-    JLabel confirmText, seedLabel; // Added seedLabel
-    JTextField seedField; // Added seedField
+
+    // Need reference to UI panel to update state after ROM load - REMOVED
+    // private GeneratorUI uiPanel;
+
+    // Confirmation dialog fields removed - moved to GeneratorUI
+    // JFrame confirm;
+    // JLabel confirmText;
+    // JButton close;
+
 
     public GeneratorPanel(){
-        // this.random = new Random(); // Defer initialization to when randomization starts
-
-        //setPreferredSize(new Dimension(600, 400));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        //Invisible confirmation window.
-        confirm = new JFrame("Rom randomization complete.");
-        confirm.setLayout(new BoxLayout(confirm.getContentPane(), BoxLayout.Y_AXIS));
-        confirmText = new JLabel("<html><center>Randomization Complete.<br>The rom is at: <br>");
-        confirmText.setBorder(new EmptyBorder(5, 5, 5, 5));
-        confirm.add(confirmText);
-        close = new JButton("Close");
-        close.addActionListener(this);
-        confirm.add(close);
-        confirm.pack();
-        confirm.setVisible(false);
-        confirm.setAlwaysOnTop(true);
-        close.setToolTipText("See this button? See how it's not centered? Fuck this button. >:C");
-        confirm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
-        //UI STUFF BEGINS
-        area1 = new JPanel();
-        area1.setLayout(new BoxLayout(area1, BoxLayout.Y_AXIS));
-        area1.setAlignmentY(TOP_ALIGNMENT);
-        area2 = new JPanel();
-        area2.setLayout(new BoxLayout(area2, BoxLayout.Y_AXIS));
-        area2.setAlignmentY(TOP_ALIGNMENT);
-        area3 = new JPanel();
-        area3.setLayout(new BoxLayout(area3, BoxLayout.Y_AXIS));
-        area3.setAlignmentY(TOP_ALIGNMENT);
-        area4 = new JPanel();
-        area4.setLayout(new BoxLayout(area4, BoxLayout.X_AXIS));
-        area4.setAlignmentY(TOP_ALIGNMENT);
-        area5 = new JPanel();
-        area5.setLayout(new BoxLayout(area5, BoxLayout.X_AXIS));
-        area5.setAlignmentY(TOP_ALIGNMENT);
-        
-        TMPanel = new JPanel();
-        TMBorder = new TitledBorder("TM Options");
-        //TMBorder.setTitleFont(TMBorder.getTitleFont().deriveFont(Font.BOLD));
-        TMPanel.setBorder(TMBorder);
-        TMPanel.setLayout(new BoxLayout(TMPanel, BoxLayout.Y_AXIS));
-        
-        GamePanel = new JPanel();
-        GameBorder = new TitledBorder("Game Options");
-        //GameBorder.setTitleFont(GameBorder.getTitleFont().deriveFont(Font.BOLD));
-        GamePanel.setBorder(GameBorder);
-        GamePanel.setLayout(new BoxLayout(GamePanel, BoxLayout.Y_AXIS));
-        
-        PokePanel = new JPanel();
-        PokeBorder = new TitledBorder("Pokemon Options");
-        //PokeBorder.setTitleFont(PokeBorder.getTitleFont().deriveFont(Font.BOLD));
-        PokePanel.setBorder(PokeBorder);
-        PokePanel.setLayout(new BoxLayout(PokePanel, BoxLayout.Y_AXIS));
-        
-        TrainerPanel = new JPanel();
-        TrainerBorder = new TitledBorder("Trainer Options");
-        //TrainerBorder.setTitleFont(TrainerBorder.getTitleFont().deriveFont(Font.BOLD));
-        TrainerPanel.setBorder(TrainerBorder);
-        TrainerPanel.setLayout(new BoxLayout(TrainerPanel, BoxLayout.Y_AXIS));
-        
-        StarterPanel = new JPanel();
-        StarterBorder = new TitledBorder("Starter Options");
-        //StarterBorder.setTitleFont(StarterBorder.getTitleFont().deriveFont(Font.BOLD));
-        StarterPanel.setBorder(StarterBorder);
-        StarterPanel.setLayout(new BoxLayout(StarterPanel, BoxLayout.Y_AXIS));
-        
-        openROM = new JButton("Open ROM");
-        openROM.setToolTipText("Loads up a ROM.");
-        openROM.addActionListener(this);
-        saveROM = new JButton("Save ROM");
-        saveROM.setToolTipText("Saves a new ROM with the selected settings");
-        saveROM.addActionListener(this);
-
-        seedLabel = new JLabel("Seed (Optional):");
-        seedField = new JTextField();
-        seedField.setToolTipText("Enter a number (long) to use as a specific seed, or leave blank for random.");
-        // Constrain the height of the text field to prevent it from stretching vertically
-        seedField.setMaximumSize(new Dimension(Integer.MAX_VALUE, seedField.getPreferredSize().height));
-
-        add(area4);
-        add(area5);
-        area5.add(openROM);
-        area5.add(saveROM);
-        area5.add(seedLabel); // Add seed label
-        area5.add(seedField); // Add seed field
-
-        area4.add(area1);
-        area4.add(area2);
-        area4.add(area3);
-        
-        area1.add(TMPanel);
-        area1.add(GamePanel);
-        
-        area2.add(PokePanel);
-        area3.add(TrainerPanel);
-        area3.add(StarterPanel);
-        
-        
-        TMCont = new JCheckBox("TM contents");
-        TMCont.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        TMCont.setToolTipText("Randomizes the contents of TMs. Dialoge regarding the TMs are not updated");
-        TMCont.addItemListener(this);
-        TMCompat = new JCheckBox("TM/HM compatability");
-        TMCompat.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        TMCompat.setToolTipText("Randomizes which pokemon can learn what TMs and HMs");
-        TMCompat.addItemListener(this);
-        
-        GamePokeGift = new JCheckBox("Gifted Pokemon");
-        GamePokeGift.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        GamePokeGift.setToolTipText("The free pokemon you recieve throughout the game, like the spearow, and the shuckle");
-        GamePokeGift.addItemListener(this);
-        GameEventPoke = new JCheckBox("Event Pokemon");
-        GameEventPoke.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        GameEventPoke.setToolTipText("The pokemon you encounter from events. Like the Red Gyarados, and the Electrodes in Mahogany");
-        GameEventPoke.addItemListener(this);
-        GameWildPoke = new JCheckBox("Wild Pokemon");
-        GameWildPoke.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        GameWildPoke.setToolTipText("This BETTER BE ON, OR I WILL HURT YOU >:C");
-        GameWildPoke.addItemListener(this);
-        
-        PokeStats = new JCheckBox("Stats");
-        PokeStats.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeStats.setToolTipText("Not currently supported.");
-        PokeStats.addItemListener(this);
-        PokeTypes = new JCheckBox("Types");
-        PokeTypes.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeTypes.setToolTipText("Not currently supported.");
-        PokeTypes.addItemListener(this);
-        PokeMovesets = new JCheckBox("Movesets");
-        PokeMovesets.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeMovesets.setToolTipText("The moves pokemon learn at their level benchmarks. Cannot be HMs, because that's broken");
-        PokeMovesets.addItemListener(this);
-        PokeLevels = new JCheckBox("Levels");
-        PokeLevels.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeLevels.setToolTipText("Enables the check boxes below. Be aware that these pretty much make the game unplayable");
-        PokeLevels.addItemListener(this);
-        PokeLevelsWild = new JCheckBox("Wild");
-        PokeLevelsWild.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeLevelsWild.setBorder(new EmptyBorder(0, 20, 0, 0));
-        PokeLevelsWild.setToolTipText("Randomize the levels of wild and event pokemon");
-        PokeLevelsWild.addItemListener(this);
-        PokeLevelsTrainer = new JCheckBox("Trainer");
-        PokeLevelsTrainer.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeLevelsTrainer.setBorder(new EmptyBorder(0, 20, 0, 0));
-        PokeLevelsTrainer.setToolTipText("Randomize the levels of trainer's pokemon");
-        PokeLevelsTrainer.addItemListener(this);
-        PokeLevelsGifts = new JCheckBox("Gifts");
-        PokeLevelsGifts.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeLevelsGifts.setBorder(new EmptyBorder(0, 20, 0, 0));
-        PokeLevelsGifts.setToolTipText("Randomize the levels of pokemon gifts to the player");
-        PokeLevelsGifts.addItemListener(this);
-        PokeTrade = new JCheckBox("Trades evolve at 40");
-        PokeTrade.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        PokeTrade.setToolTipText("Instead of having to trade for certain pokemon, they evolve at level 40. Kadabra -> Alakazam for example");
-        PokeTrade.addItemListener(this);
-        
-        TrainerPoke = new JCheckBox("Pokemon");
-        TrainerPoke.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        TrainerPoke.setToolTipText("Randomizes the pokemon trainers have. If their fight had their moves hardcoded in, those will be randomized too");
-        TrainerPoke.addItemListener(this);
-        TrainerNames = new JCheckBox("Names");
-        TrainerNames.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        TrainerNames.setToolTipText("Replaces trainers' names from the name pool. You'll probably see a lot of repeats");
-        TrainerNames.addItemListener(this);
-        TrainerRival = new JCheckBox("Rival keeps starter");
-        TrainerRival.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        TrainerRival.setToolTipText("The rival keeps the starter he selects at the beginning of the game");
-        TrainerRival.addItemListener(this);
-        
-        StarterStarters = new JCheckBox("Random starters");
-        StarterStarters.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        StarterStarters.setToolTipText("Turn this on and leave it on");
-        StarterStarters.addItemListener(this);
-        StarterItems = new JCheckBox("Random Items");
-        StarterItems.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        StarterItems.setToolTipText("Instead of a Berry, the starter (AND SHUCKIE), will be holding a random item. Shuckie and the starter do not necessarily have the same item.");
-        StarterItems.addItemListener(this);
-        StarterItemsKeys = new JCheckBox("Ban Key Items");
-        StarterItemsKeys.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        StarterItemsKeys.setBorder(new EmptyBorder(0, 20, 0, 0));
-        StarterItemsKeys.setToolTipText("Removes Key Items from the pool of possible items. Like the SQUIRTBOTTLE and SUPER ROD");
-        StarterItemsKeys.addItemListener(this);
-        
-        
-        TMCont.setEnabled(false);
-        TMCompat.setEnabled(false);
-        GamePokeGift.setEnabled(false);
-        GameEventPoke.setEnabled(false);
-        GameWildPoke.setEnabled(false);
-        PokeStats.setEnabled(false);
-        PokeTypes.setEnabled(false);
-        PokeMovesets.setEnabled(false);
-        PokeLevels.setEnabled(false);
-        PokeLevelsWild.setEnabled(false);
-        PokeLevelsTrainer.setEnabled(false);
-        PokeLevelsGifts.setEnabled(false);
-        PokeTrade.setEnabled(false);
-        TrainerPoke.setEnabled(false);
-        TrainerNames.setEnabled(false);
-        TrainerRival.setEnabled(false);
-        StarterStarters.setEnabled(false);
-        StarterItems.setEnabled(false);
-        StarterItemsKeys.setEnabled(false);
-        
-        TMPanel.add(TMCont);
-        TMPanel.add(TMCompat);
-        
-        GamePanel.add(GamePokeGift);
-        GamePanel.add(GameEventPoke);
-        GamePanel.add(GameWildPoke);
-        
-        PokePanel.add(PokeStats);
-        PokePanel.add(PokeTypes);
-        PokePanel.add(PokeMovesets);
-        PokePanel.add(PokeLevels);
-        PokePanel.add(PokeLevelsWild);
-        PokePanel.add(PokeLevelsTrainer);
-        PokePanel.add(PokeLevelsGifts);
-        PokePanel.add(PokeTrade);
-        
-        TrainerPanel.add(TrainerRival);
-        TrainerPanel.add(TrainerPoke);
-        TrainerPanel.add(TrainerNames);
-        
-        StarterPanel.add(StarterStarters);
-        StarterPanel.add(StarterItems);
-        StarterPanel.add(StarterItemsKeys);
-
+        // No UI initialization here anymore
 
         starters = new int[3];
         // Defer generator initialization until randomization starts
@@ -307,15 +94,16 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
 
         //Done with the initialization.
     }
-    public void openROM(){
-        JFileChooser choose = new JFileChooser();
-        int returnVal = choose.showOpenDialog(this);
-        if(returnVal == JFileChooser.APPROVE_OPTION){
-            try{
-                File file = choose.getSelectedFile();
-                fileArray = read(file);
-                fileArray2 = new byte[fileArray.length];
-                oStream = new ByteArrayOutputStream();
+
+    // Modified to accept a File object instead of showing the chooser
+    public boolean openROM(File file){
+        if (file == null) {
+            return false; // No file selected
+        }
+        try{
+            fileArray = read(file);
+            fileArray2 = new byte[fileArray.length];
+            oStream = new ByteArrayOutputStream();
                 
                 System.out.println(fileArray.length);
                 
@@ -324,46 +112,12 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
                 }else if(fileArray[9] == 0x63){
                     gameVersion = 1;
                 }
-                TMCont.setSelected(true);
-                TMCompat.setSelected(true);
-                GamePokeGift.setSelected(true);
-                GameEventPoke.setSelected(true);
-                GameWildPoke.setSelected(true);
-                PokeStats.setSelected(false);
-                PokeTypes.setSelected(false);
-                PokeMovesets.setSelected(true);
-                PokeLevels.setSelected(false);
-                PokeLevelsWild.setSelected(false);
-                PokeLevelsTrainer.setSelected(false);
-                PokeLevelsGifts.setSelected(false);
-                PokeTrade.setSelected(true);
-                TrainerPoke.setSelected(true);
-                TrainerNames.setSelected(true);
-                TrainerRival.setSelected(true);
-                StarterStarters.setSelected(true);
-                StarterItems.setSelected(true);
-                StarterItemsKeys.setSelected(true);
-                
-                TMCont.setEnabled(true);
-                TMCompat.setEnabled(true);
-                GamePokeGift.setEnabled(true);
-                GameEventPoke.setEnabled(true);
-                GameWildPoke.setEnabled(true);
-                PokeStats.setEnabled(false);
-                PokeTypes.setEnabled(false);
-                PokeMovesets.setEnabled(true);
-                PokeLevels.setEnabled(true);
-                PokeLevelsWild.setEnabled(false);
-                PokeLevelsTrainer.setEnabled(false);
-                PokeLevelsGifts.setEnabled(false);
-                PokeTrade.setEnabled(true);
-                TrainerPoke.setEnabled(true);
-                TrainerNames.setEnabled(true);
-                TrainerRival.setEnabled(true);
-                StarterStarters.setEnabled(true);
-                StarterItems.setEnabled(true);
-                StarterItemsKeys.setEnabled(true);
+                // UI state updates moved to GeneratorUI.updateUIStateAfterROMLoad()
+                // TMCont.setSelected(true);
+                // ... (removed all setSelected/setEnabled calls) ...
+                // StarterItemsKeys.setEnabled(true);
 
+                // Set initial boolean flags
                 BTMCont = true;
                 BTMCompat = true;
                 BGamePokeGift = true;
@@ -383,197 +137,52 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
                 BStarterStarters = true;
                 BStarterItems = true;
                 BStarterItemsKeys = true;
+
+                // UI state update is now handled by GeneratorUI after calling openROM
+                // UI state update is now handled by GeneratorUI after calling openROM
+
+                return true; // Indicate success
             }catch(Throwable t){
-                System.out.println("Nope.");
+                System.out.println("Error opening ROM: " + t.getMessage());
+                t.printStackTrace(); // Print stack trace for debugging
+                return false; // Indicate failure
             }
-        }
     }
-    public void randomizeROM(){
+
+    // Modified to accept seed and return save path for confirmation dialog
+    public File randomizeROM(long seed){
+        initializeGenerators(seed); // Pass the seed
+
         if(gameVersion == 0){
-            randomizeForGold();
-            confirmText.setText(confirmText.getText() + save.getAbsolutePath() + "</center></html>");
-            confirm.setVisible(true);
-            confirm.pack();
-            System.out.println("Randomized.");
-            //System.exit(0);
+            randomizeForGold(); // randomizeForGold now uses the initialized generators
+            System.out.println("Randomized Gold.");
+            return save; // Return the save file path
         }
         if(gameVersion == 1){
-            randomizeForCrystal();
-            System.out.println("Randomized.");
-            confirmText.setText(confirmText.getText() + save.getAbsolutePath() + "</center></html>");
-            confirm.setVisible(true);
-            confirm.pack();
-            //System.exit(0);
+            randomizeForCrystal(); // randomizeForCrystal now uses the initialized generators
+            System.out.println("Randomized Crystal.");
+            return save; // Return the save file path
         }
+        return null; // Should not happen if gameVersion is set correctly
     }
-    
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == openROM){
-            openROM();
-        }
-        if(e.getSource() == saveROM){
-            randomizeROM();
-        }
-        if(e.getSource() == close){
-            System.exit(0);
-        }
-    }
-    
-    @Override
-    public void itemStateChanged(ItemEvent e){
-        if(e.getItemSelectable() == TMCont){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BTMCont = false;
-            }else{
-                BTMCont = true;
-            }
-        }
-        if(e.getItemSelectable() == TMCompat){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BTMCompat = false;
-            }else{
-                BTMCompat = true;
-            }
-        }
-        if(e.getItemSelectable() == GameEventPoke){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BGameEventPoke = false;
-            }else{
-                BGameEventPoke = true;
-            }
-        }
-        if(e.getItemSelectable() == GamePokeGift){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BGamePokeGift = false;
-            }else{
-                BGamePokeGift = true;
-            }
-        }
-        if(e.getItemSelectable() == GameWildPoke){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BGameWildPoke = false;
-            }else{
-                BGameWildPoke = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeStats){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeStats = false;
-            }else{
-                BPokeStats = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeTypes){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeTypes = false;
-            }else{
-                BPokeTypes = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeLevelsWild){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeLevelsWild = false;
-            }else{
-                BPokeLevelsWild = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeLevelsTrainer){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeLevelsTrainer = false;
-            }else{
-                BPokeLevelsTrainer = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeLevelsGifts){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeLevelsGifts = false;
-            }else{
-                BPokeLevelsGifts = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeTrade){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeTrade = false;
-            }else{
-                BPokeTrade = true;
-            }
-        }
-        if(e.getItemSelectable() == TrainerRival){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BTrainerRival = false;
-            }else{
-                BTrainerRival = true;
-            }
-        }
-        if(e.getItemSelectable() == TrainerNames){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BTrainerNames = false;
-            }else{
-                BTrainerNames = true;
-            }
-        }
-        if(e.getItemSelectable() == TrainerPoke){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BTrainerPoke = false;
-            }else{
-                BTrainerPoke = true;
-            }
-        }
-        if(e.getItemSelectable() == StarterStarters){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BStarterStarters = false;
-            }else{
-                BStarterStarters = true;
-            }
-        }
-        if(e.getItemSelectable() == StarterItemsKeys){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BStarterItemsKeys = false;
-            }else{
-                BStarterItemsKeys = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeMovesets){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                BPokeMovesets = false;
-            }else{
-                BPokeMovesets = true;
-            }
-        }
-        if(e.getItemSelectable() == StarterItems){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                StarterItemsKeys.setEnabled(false);
-                StarterItemsKeys.setSelected(false);
-                BStarterItemsKeys = false;
-            }else{
-                StarterItemsKeys.setEnabled(true);
-                BStarterItems = true;
-            }
-        }
-        if(e.getItemSelectable() == PokeLevels){
-            if(e.getStateChange() == ItemEvent.DESELECTED){
-                PokeLevelsWild.setEnabled(false);
-                PokeLevelsWild.setSelected(false);
-                BPokeLevelsWild = false;
-                PokeLevelsTrainer.setEnabled(false);
-                PokeLevelsTrainer.setSelected(false);
-                BPokeLevelsTrainer = false;
-                PokeLevelsGifts.setEnabled(false);
-                PokeLevelsGifts.setSelected(false);
-                BPokeLevelsGifts = false;
-            }else{
-                PokeLevelsWild.setEnabled(true);
-                PokeLevelsTrainer.setEnabled(true);
-                PokeLevelsGifts.setEnabled(true);
-                BPokeLevels = true;
-            }
-        }
-    }
-    
+
+    // ActionListener removed entirely
+    // ItemListener removed entirely
+    // @Override
+    // public void itemStateChanged(ItemEvent e){
+    //     if(e.getItemSelectable() == TMCont){
+    //         if(e.getStateChange() == ItemEvent.DESELECTED){
+    //             BTMCont = false;
+    // ... (removed entire itemStateChanged method) ...
+    //         }
+    //     }
+    // }
+
+    // Orphaned itemStateChanged body removed.
+
     public byte[] read(File file) throws IOException {
-        
-        ByteArrayOutputStream ous = new ByteArrayOutputStream();
+
+        ByteArrayOutputStream ous = null; // Initialize ous to null
         InputStream ios = new FileInputStream(file);
                 
         try {
@@ -602,25 +211,12 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
         return ous.toByteArray();
     }
 
-    private void initializeGenerators() {
-        String seedText = seedField.getText().trim();
-        long seed;
-        if (!seedText.isEmpty()) {
-            try {
-                seed = Long.parseLong(seedText);
-                System.out.println("Using provided seed: " + seed);
-            } catch (NumberFormatException e) {
-                seed = new Random().nextLong();
-                System.out.println("Invalid seed format. Generating seed: " + seed);
-            }
-        } else {
-            seed = new Random().nextLong();
-            System.out.println("No seed provided. Generating seed: " + seed);
-        }
-        seedField.setText(String.valueOf(seed));
+    // Modified to accept seed directly
+    private void initializeGenerators(long seed) {
+        System.out.println("Initializing generators with seed: " + seed);
         this.random = new Random(seed);
 
-        // Initialize generators with the (potentially seeded) random instance
+        // Initialize generators with the seeded random instance
         TMGen = new TM_Generator(this.random);
         PokeGen = new Poke_Generator(this.random);
         NameGen = new Name_Generator(this.random);
@@ -628,7 +224,7 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
     }
 
     private void randomizeForGold() {
-        initializeGenerators(); // Initialize with seed from UI
+        // initializeGenerators(seed) is now called by randomizeROM(seed)
 
         //Select the starters, but let's not have two of the same starter.
         boolean weGood = false;
@@ -1849,7 +1445,7 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
     }
 
     public void randomizeForCrystal(){
-        initializeGenerators(); // Initialize with seed from UI
+         // initializeGenerators(seed) is now called by randomizeROM(seed)
 
         //Select the starters, but let's not have two of the same starter.
         boolean weGood = false;
