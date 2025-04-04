@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField; // Added import
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -62,10 +63,11 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
             BStarterStarters, BStarterItems, BStarterItemsKeys;
     JButton openROM, saveROM, close;
     JFrame confirm;
-    JLabel confirmText;
+    JLabel confirmText, seedLabel; // Added seedLabel
+    JTextField seedField; // Added seedField
 
     public GeneratorPanel(){
-        this.random = new Random(); // Initialize Random instance
+        // this.random = new Random(); // Defer initialization to when randomization starts
 
         //setPreferredSize(new Dimension(600, 400));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -138,12 +140,20 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
         saveROM = new JButton("Save ROM");
         saveROM.setToolTipText("Saves a new ROM with the selected settings");
         saveROM.addActionListener(this);
-        
+
+        seedLabel = new JLabel("Seed (Optional):");
+        seedField = new JTextField();
+        seedField.setToolTipText("Enter a number (long) to use as a specific seed, or leave blank for random.");
+        // Constrain the height of the text field to prevent it from stretching vertically
+        seedField.setMaximumSize(new Dimension(Integer.MAX_VALUE, seedField.getPreferredSize().height));
+
         add(area4);
         add(area5);
         area5.add(openROM);
         area5.add(saveROM);
-        
+        area5.add(seedLabel); // Add seed label
+        area5.add(seedField); // Add seed field
+
         area4.add(area1);
         area4.add(area2);
         area4.add(area3);
@@ -285,13 +295,14 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
         StarterPanel.add(StarterStarters);
         StarterPanel.add(StarterItems);
         StarterPanel.add(StarterItemsKeys);
-        
+
 
         starters = new int[3];
-        TMGen = new TM_Generator(this.random); // Pass random instance
-        PokeGen = new Poke_Generator(this.random); // Pass random instance
-        NameGen = new Name_Generator(this.random); // Pass random instance
-        ItemGen = new Item_Generator(this.random); // Pass random instance
+        // Defer generator initialization until randomization starts
+        // TMGen = new TM_Generator(this.random);
+        // PokeGen = new Poke_Generator(this.random);
+        // NameGen = new Name_Generator(this.random);
+        // ItemGen = new Item_Generator(this.random);
         offset = 0x0;
 
         //Done with the initialization.
@@ -591,7 +602,34 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
         return ous.toByteArray();
     }
 
+    private void initializeGenerators() {
+        String seedText = seedField.getText().trim();
+        long seed;
+        if (!seedText.isEmpty()) {
+            try {
+                seed = Long.parseLong(seedText);
+                System.out.println("Using provided seed: " + seed);
+            } catch (NumberFormatException e) {
+                seed = new Random().nextLong();
+                System.out.println("Invalid seed format. Generating seed: " + seed);
+            }
+        } else {
+            seed = new Random().nextLong();
+            System.out.println("No seed provided. Generating seed: " + seed);
+        }
+        seedField.setText(String.valueOf(seed));
+        this.random = new Random(seed);
+
+        // Initialize generators with the (potentially seeded) random instance
+        TMGen = new TM_Generator(this.random);
+        PokeGen = new Poke_Generator(this.random);
+        NameGen = new Name_Generator(this.random);
+        ItemGen = new Item_Generator(this.random);
+    }
+
     private void randomizeForGold() {
+        initializeGenerators(); // Initialize with seed from UI
+
         //Select the starters, but let's not have two of the same starter.
         boolean weGood = false;
         while(!weGood){
@@ -1809,8 +1847,10 @@ public class GeneratorPanel extends JPanel implements ItemListener, ActionListen
             //
         }
     }
-    
+
     public void randomizeForCrystal(){
+        initializeGenerators(); // Initialize with seed from UI
+
         //Select the starters, but let's not have two of the same starter.
         boolean weGood = false;
         while(!weGood){
