@@ -1,15 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package pokemon.gsc.randomizer;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,29 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Random; // Added import
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField; // Added import
-import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
+import java.util.Random;
 
-/**
- *
- * @author Zack
- */
+public class Generator {
 
+    private static final String DEFAULT_GOLD_FILENAME = "RenameMe.gbc";
+    private static final String DEFAULT_CRYSTAL_FILENAME = "RenameMeCrystal.gbc";
 
-public class Generator extends JPanel { // Renamed class from GeneratorPanel to Generator
-
-    private Random random; // Added Random instance field
     public int gameVersion;
     public int[] starters;
     public byte[] fileArray;
@@ -51,203 +25,133 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
     public Name_Generator NameGen;
     public Item_Generator ItemGen;
 
-    // UI Stuff moved to GeneratorUI
-    // JPanel area1, area2, area3, area4, area5, TMPanel, GamePanel, PokePanel, TrainerPanel, StarterPanel;
-    // TitledBorder TMBorder, GameBorder, PokeBorder, TrainerBorder, StarterBorder;
-    // JCheckBox TMCont, TMCompat, GamePokeGift, GameEventPoke, GameWildPoke, PokeStats, PokeTypes, PokeMovesets,
-    //         PokeLevels, PokeLevelsWild, PokeLevelsTrainer, PokeLevelsGifts, PokeTrade, TrainerRival, TrainerNames, TrainerPoke,
-    //         StarterStarters, StarterItems, StarterItemsKeys;
-    // boolean BTMCont, BTMCompat, BGamePokeGift, BGameEventPoke, BGameWildPoke, BPokeStats, BPokeTypes, BPokeMovesets,
-    //         BPokeLevels, BPokeLevelsWild, BPokeLevelsTrainer, BPokeLevelsGifts, BPokeTrade, BTrainerRival, BTrainerNames, BTrainerPoke,
-    //         BStarterStarters, BStarterItems, BStarterItemsKeys; // These boolean flags might need to stay or be handled differently
-    // JButton openROM, saveROM, close;
-    // JFrame confirm;
-    // JLabel confirmText, seedLabel;
-    // JTextField seedField;
-
-    // Keep boolean flags for now, GeneratorUI will need access
-    // Make public for now for GeneratorUI access (better encapsulation later)
+    // Made public for now for GeneratorUI access (better encapsulation later)
     public boolean BTMCont, BTMCompat, BGamePokeGift, BGameEventPoke, BGameWildPoke, BPokeStats, BPokeTypes, BPokeMovesets,
             BPokeLevels, BPokeLevelsWild, BPokeLevelsTrainer, BPokeLevelsGifts, BPokeTrade, BTrainerRival, BTrainerNames, BTrainerPoke,
             BStarterStarters, BStarterItems, BStarterItemsKeys;
 
-    // Need reference to UI panel to update state after ROM load - REMOVED
-    // private GeneratorUI uiPanel;
-
-    // Confirmation dialog fields removed - moved to GeneratorUI
-    // JFrame confirm;
-    // JLabel confirmText;
-    // JButton close;
-
-
-    public Generator(){
-        // No UI initialization here anymore
-
+    public Generator() {
         starters = new int[3];
-        // Defer generator initialization until randomization starts
-        // TMGen = new TM_Generator(this.random);
-        // PokeGen = new Poke_Generator(this.random);
-        // NameGen = new Name_Generator(this.random);
-        // ItemGen = new Item_Generator(this.random);
         offset = 0x0;
-
-        //Done with the initialization.
     }
 
-    // Modified to accept a File object instead of showing the chooser
-    public boolean openROM(File file){
+    public boolean openROM(File file) {
         if (file == null) {
-            return false; // No file selected
+            return false; 
         }
-        try{
+        try {
             fileArray = read(file);
             fileArray2 = new byte[fileArray.length];
             oStream = new ByteArrayOutputStream();
                 
-                System.out.println(fileArray.length);
-                
-                if(fileArray[9] == 0x27){
-                    gameVersion = 0;
-                }else if(fileArray[9] == 0x63){
-                    gameVersion = 1;
-                }
-                // UI state updates moved to GeneratorUI.updateUIStateAfterROMLoad()
-                // TMCont.setSelected(true);
-                // ... (removed all setSelected/setEnabled calls) ...
-                // StarterItemsKeys.setEnabled(true);
-
-                // Set initial boolean flags
-                BTMCont = true;
-                BTMCompat = true;
-                BGamePokeGift = true;
-                BGameEventPoke = true;
-                BGameWildPoke = true;
-                BPokeStats = false;
-                BPokeTypes = false;
-                BPokeMovesets = true;
-                BPokeLevels = false;
-                BPokeLevelsWild = false;
-                BPokeLevelsTrainer = false;
-                BPokeLevelsGifts = false;
-                BPokeTrade = true;
-                BTrainerPoke = true;
-                BTrainerNames = true;
-                BTrainerRival = true;
-                BStarterStarters = true;
-                BStarterItems = true;
-                BStarterItemsKeys = true;
-
-                // UI state update is now handled by GeneratorUI after calling openROM
-                // UI state update is now handled by GeneratorUI after calling openROM
-
-                return true; // Indicate success
-            }catch(Throwable t){
-                System.out.println("Error opening ROM: " + t.getMessage());
-                t.printStackTrace(); // Print stack trace for debugging
-                return false; // Indicate failure
+            if (fileArray[9] == 0x27){
+                gameVersion = 0;
+            } else if (fileArray[9] == 0x63){
+                gameVersion = 1;
             }
+            BTMCont = true;
+            BTMCompat = true;
+            BGamePokeGift = true;
+            BGameEventPoke = true;
+            BGameWildPoke = true;
+            BPokeStats = false;
+            BPokeTypes = false;
+            BPokeMovesets = true;
+            BPokeLevels = false;
+            BPokeLevelsWild = false;
+            BPokeLevelsTrainer = false;
+            BPokeLevelsGifts = false;
+            BPokeTrade = true;
+            BTrainerPoke = true;
+            BTrainerNames = true;
+            BTrainerRival = true;
+            BStarterStarters = true;
+            BStarterItems = true;
+            BStarterItemsKeys = true;
+            return true;
+        } catch(Throwable t) {
+            System.out.println("Error opening ROM: " + t.getMessage());
+            t.printStackTrace();
+            return false;
+        }
     }
 
-    // Modified to accept seed and return save path for confirmation dialog
-    public File randomizeROM(long seed, String outputFile){
-        initializeGenerators(seed); // Pass the seed
+    public File randomizeROM(long seed, String outputFile) {
+        initializeGenerators(seed);
 
         if(gameVersion == 0){
-            ByteArrayOutputStream oStream = randomizeForGold(); // randomizeForGold now uses the initialized generators
+            ByteArrayOutputStream oStream = randomizeForGold();
             System.out.println("Randomized Gold.");
-            outputFile = !outputFile.isEmpty() ? outputFile : "RenameMe.gbc";
-            return saveROM(oStream, outputFile); // Return the save file path
+            outputFile = !outputFile.isEmpty() ? outputFile : DEFAULT_GOLD_FILENAME;
+            return saveROM(oStream, outputFile);
         }
         if(gameVersion == 1){
-            ByteArrayOutputStream oStream = randomizeForCrystal(); // randomizeForCrystal now uses the initialized generators
+            ByteArrayOutputStream oStream = randomizeForCrystal();
             System.out.println("Randomized Crystal.");
-            outputFile = !outputFile.isEmpty() ? outputFile : "RenameMeCrystal.gbc";
-            return saveROM(oStream, outputFile); // Return the save file path
+            outputFile = !outputFile.isEmpty() ? outputFile : DEFAULT_CRYSTAL_FILENAME;
+            return saveROM(oStream, outputFile);
         }
-        return null; // Should not happen if gameVersion is set correctly
+        // Should not happen if gameVersion is set correctly.
+        return null; 
     }
 
     public File saveROM(ByteArrayOutputStream oStream, String outputFile) {
         File save = new File(outputFile);
-        if(save.exists()){ //Save exists - Purge it.
-            try{
+        if(save.exists()) {
+            try {
                 save.delete();
-            }catch(Throwable t){
-                //
-            }
+            } catch(Throwable t) {}
         }
-        try{
+        try {
             save.createNewFile();
             OutputStream oStream2 = new FileOutputStream(save);
             oStream.writeTo(oStream2);
             System.out.println(save.getAbsolutePath());
-        }catch(Throwable t){
+        } catch(Throwable t) {
             return null;
         }
         return save;
     }
 
-    // ActionListener removed entirely
-    // ItemListener removed entirely
-    // @Override
-    // public void itemStateChanged(ItemEvent e){
-    //     if(e.getItemSelectable() == TMCont){
-    //         if(e.getStateChange() == ItemEvent.DESELECTED){
-    //             BTMCont = false;
-    // ... (removed entire itemStateChanged method) ...
-    //         }
-    //     }
-    // }
-
-    // Orphaned itemStateChanged body removed.
-
     public byte[] read(File file) throws IOException {
-
-        ByteArrayOutputStream ous = null; // Initialize ous to null
+        ByteArrayOutputStream ous = null;
         InputStream ios = new FileInputStream(file);
                 
         try {
-            byte []buffer = new byte[4096];
+            byte[] buffer = new byte[4096];
             ous = new ByteArrayOutputStream();
             ios = new FileInputStream(file);
             int read = 0;
-            while ( (read = ios.read(buffer)) != -1 ) {
+            while ((read = ios.read(buffer)) != -1) {
                 ous.write(buffer, 0, read);
             }
-        }finally{ 
-            try{
-                 if(ous != null){
+        } finally { 
+            try {
+                 if(ous != null) {
                      ous.close();
                  }
-            }catch(IOException e) {
-            }
+            } catch(IOException e) {}
 
             try {
-                 if (ios != null) {
+                 if(ios != null) {
                       ios.close();
                  }
-            } catch (IOException e) {
-            }
+            } catch (IOException e) {}
         }
         return ous.toByteArray();
     }
 
-    // Modified to accept seed directly
     private void initializeGenerators(long seed) {
         System.out.println("Initializing generators with seed: " + seed);
-        this.random = new Random(seed);
-
-        // Initialize generators with the seeded random instance
-        TMGen = new TM_Generator(this.random);
-        PokeGen = new Poke_Generator(this.random);
-        NameGen = new Name_Generator(this.random);
-        ItemGen = new Item_Generator(this.random);
+        Random random = new Random(seed);
+        TMGen = new TM_Generator(random);
+        PokeGen = new Poke_Generator(random);
+        NameGen = new Name_Generator(random);
+        ItemGen = new Item_Generator(random);
     }
 
     private ByteArrayOutputStream randomizeForGold() {
-        // initializeGenerators(seed) is now called by randomizeROM(seed)
-
-        //Select the starters, but let's not have two of the same starter.
+        // Select the starters, but let's not have two of the same starter.
         boolean weGood = false;
         while(!weGood){
             weGood = true;
@@ -1451,9 +1355,7 @@ public class Generator extends JPanel { // Renamed class from GeneratorPanel to 
     }
 
     public ByteArrayOutputStream randomizeForCrystal(){
-         // initializeGenerators(seed) is now called by randomizeROM(seed)
-
-        //Select the starters, but let's not have two of the same starter.
+        // Select the starters, but let's not have two of the same starter.
         boolean weGood = false;
         while(!weGood){
             weGood = true;
