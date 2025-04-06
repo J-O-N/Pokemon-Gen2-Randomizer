@@ -1,21 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package pokemon.gsc.randomizer;
 
 import java.util.Random;
 
-/**
- *
- * @author Zack
- */
 public class TM_Generator {
-    int lastSafeTM = 0xFB;
-    int[] movesPicked;
-    int index;
-    Random random;
 
+    private static final int LAST_SAFE_TM = 0xFB;
+
+    private int[] movesPicked;
+    private int index;
+    private Random random;
 
     public TM_Generator(Random randomInstance){
         this.random = randomInstance;
@@ -27,15 +20,14 @@ public class TM_Generator {
         movesPicked[4] = 0x46;
         movesPicked[5] = 0x13;
         movesPicked[6] = 0x0F;
-        // random = new Random(); // Removed: Instance is now injected
         index = 7;
     }
 
-    public int insertTM(){
+    public int insertTM() {
         boolean goodNumber = false;
         int d = 0;
         while(!goodNumber){
-            d = random.nextInt(lastSafeTM)+1;
+            d = random.nextInt(LAST_SAFE_TM)+1;
             goodNumber = true;
             for(int i = 0; i < 57; i++){
                 if(d == movesPicked[i] || d == 0){
@@ -49,14 +41,15 @@ public class TM_Generator {
         return d;
     }
     
-    public int giveMove(){
-        return random.nextInt(lastSafeTM)+1;
+    public int giveMove() {
+        return random.nextInt(LAST_SAFE_TM) + 1;
     }
-    public int giveNonHMMove(){
+
+    public int giveNonHMMove() {
         boolean goodNumber = false;
         int d = 0;
         while(!goodNumber){
-            d = random.nextInt(lastSafeTM)+1;
+            d = random.nextInt(LAST_SAFE_TM)+1;
             goodNumber = true;
             for(int i = 0; i < 7; i++){
                 if(d == movesPicked[i] || d == 0){
@@ -66,7 +59,8 @@ public class TM_Generator {
         }
         return d;
     }
-    public int giveRandomByte(){
+
+    public int giveRandomByte() {
         return random.nextInt(256);
     }
 }
