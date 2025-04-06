@@ -104,7 +104,6 @@ public class GeneratorUI extends JPanel implements ItemListener, ActionListener 
         confirm.pack();
         confirm.setVisible(false);
         confirm.setAlwaysOnTop(true);
-        close.setToolTipText("See this button? See how it's not centered? Fuck this button. >:C");
         confirm.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // Dispose instead of exit
 
         // Checkboxes

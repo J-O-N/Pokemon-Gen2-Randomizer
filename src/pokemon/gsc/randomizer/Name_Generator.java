@@ -86,7 +86,7 @@ public class Name_Generator {
                 name = "Bob";
                 break;
             case 7:
-                name = "Ass";
+                name = "Tom";
                 break;
             case 8:
                 name = "Bro";
@@ -209,7 +209,7 @@ public class Name_Generator {
                 name = "Zephyr";
                 break;
             case 6:
-                name = "Faggot";
+                name = "George";
                 break;
             case 7:
                 name = "Gorble";
@@ -292,7 +292,7 @@ public class Name_Generator {
                 name = "Romscout";
                 break;
             case 7:
-                name = "Bullshit";
+                name = "Pikachu-";
                 break;
             case 8:
                 name = "Alleymew";
