@@ -201,8 +201,8 @@ public class Generator {
         if(BTMCont){
             oStream.write(fileArray, offset, 0x11A66 - offset);
             offset += 0x11A66 - offset;
-            for(int i = 0; i < 50; i++){
-                oStream.write(TMGen.insertTM());
+            for(int tm : TMGen.getTmMoveSet(50)) {
+                oStream.write(tm);
                 offset++;
             }
         }
@@ -1399,8 +1399,8 @@ public class Generator {
         if(BTMCont){
             oStream.write(fileArray, offset, 0x1167A - offset);
             offset += 0x1167A - offset;
-            for(int i = 0; i < 50; i++){
-                oStream.write(TMGen.insertTM());
+            for(int tm : TMGen.getTmMoveSet(50)) {
+                oStream.write(tm);
                 offset++;
             }
         }
