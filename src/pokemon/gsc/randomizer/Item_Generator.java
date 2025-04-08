@@ -1,104 +1,66 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package pokemon.gsc.randomizer;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
-/**
- *
- * @author Zack
- */
 public class Item_Generator {
-    int lastSafeItem = 0xF1;
-    int[] invalidItems;
-    int index;
-    Random random;
 
+    private static final Set<Integer> INVALID_ITEMS = buildInvalidItemSet();
+    private static final Set<Integer> KEY_ITEMS = buildKeyItemSet();
+
+    private static Set<Integer> buildInvalidItemSet() {
+        Set<Integer> itemSet = new HashSet<>();
+        // Empty spaces / unusable items.
+        itemSet.addAll(Arrays.asList(
+            0x06, 0x19, 0x2D, 0x32, 0x38, 0x46, 0x5A, 0x64, 0x73, 0x74,
+            0x78, 0x81, 0x87, 0x88, 0x89, 0x8D, 0x8E, 0x91, 0x93, 0x94,
+            0x95, 0x99, 0x9A, 0x9B, 0xA2, 0xAB, 0xB0, 0xB3, 0xBE
+        ));
+        return Collections.unmodifiableSet(itemSet);
+    }
+
+    private static Set<Integer> buildKeyItemSet() {
+        Set<Integer> itemSet = new HashSet<>();
+        // Key Items that shouldn't be randomly assigned generally.
+        itemSet.addAll(Arrays.asList(
+            0x07, 0x36, 0x37, 0x3D, 0x42, 0x44, 0x43, 0x45, 0x47, 0x7F,
+            0x80, 0x82, 0x85, 0x86, 0xAF, 0xB2
+        ));
+        return Collections.unmodifiableSet(itemSet);
+    }
+
+    private static final int LAST_SAFE_ITEM = 0xF1;
+
+    private Random random;
 
     public Item_Generator(Random randomInstance){
         this.random = randomInstance;
-        invalidItems = new int[45];
-        //Empty spaces
-        invalidItems[0] = 0x06;
-        invalidItems[1] = 0x19;
-        invalidItems[2] = 0x2D;
-        invalidItems[3] = 0x32;
-        invalidItems[4] = 0x38;
-        invalidItems[5] = 0x46;
-        invalidItems[6] = 0x5A;
-        invalidItems[7] = 0x64;
-        invalidItems[8] = 0x73;
-        invalidItems[9] = 0x74;
-        invalidItems[10] = 0x78;
-        invalidItems[11] = 0x81;
-        invalidItems[12] = 0x87;
-        invalidItems[13] = 0x88;
-        invalidItems[14] = 0x89;
-        invalidItems[15] = 0x8D;
-        invalidItems[16] = 0x8E;
-        invalidItems[17] = 0x91;
-        invalidItems[18] = 0x93;
-        invalidItems[19] = 0x94;
-        invalidItems[20] = 0x95;
-        invalidItems[21] = 0x99;
-        invalidItems[22] = 0x9A;
-        invalidItems[23] = 0x9B;
-        invalidItems[24] = 0xA2;
-        invalidItems[25] = 0xAB;
-        invalidItems[26] = 0xB0;
-        invalidItems[27] = 0xB3;
-        invalidItems[28] = 0xBE;
-        
-        //Key Items that'd be broken as fuck to have
-        invalidItems[29] = 0x07;
-        invalidItems[30] = 0x36;
-        invalidItems[31] = 0x3D;
-        invalidItems[32] = 0x42;
-        invalidItems[33] = 0x44;
-        invalidItems[34] = 0x43;
-        invalidItems[35] = 0x45;
-        invalidItems[37] = 0x47;
-        invalidItems[38] = 0x7F;
-        invalidItems[39] = 0x80;
-        invalidItems[40] = 0x82;
-        invalidItems[41] = 0x85;
-        invalidItems[42] = 0x86;
-        invalidItems[43] = 0xAF;
-        invalidItems[44] = 0xB2;
-        // random = new Random(); // Removed: Instance is now injected
     }
 
-    public int insertItem(){
-        boolean goodNumber = false;
-        int d = 0;
-        while(!goodNumber){
-            d = random.nextInt(lastSafeItem)+1;
-            goodNumber = true;
-            for(int i = 0; i < 45; i++){
-                if(d == invalidItems[i] || d == 0){
-                    goodNumber = false;
-                    System.out.println("Threw out Item "+d);
-                }
-            }
-        }
-        return d;
+    /**
+     * Generates a random item ID, excluding invalid items and key items.
+     * @return A valid, non-key item ID.
+     */
+    public int insertItem() {
+        int item = 0;
+        while(item == 0 || KEY_ITEMS.contains(item)) {
+            item = insertAnyItem();
+        } 
+        return item;
     }
-    
-    public int insertItemAny(){
-        boolean goodNumber = false;
-        int d = 0;
-        while(!goodNumber){
-            d = random.nextInt(lastSafeItem)+1;
-            goodNumber = true;
-            for(int i = 0; i < 29; i++){
-                if(d == invalidItems[i] || d == 0){
-                    goodNumber = false;
-                    System.out.println("Threw out Item "+d);
-                }
-            }
-        }
-        return d;
+
+    /**
+     * Generates a random item ID, excluding only invalid items (allows key items).
+     * @return A valid item ID, potentially a key item.
+     */
+    public int insertAnyItem() {
+        int item = 0;
+        while(item == 0 || INVALID_ITEMS.contains(item)) {
+            item = random.nextInt(LAST_SAFE_ITEM) + 1;
+        } 
+        return item;
     }
 }

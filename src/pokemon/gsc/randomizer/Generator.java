@@ -189,7 +189,7 @@ public class Generator {
                 if(BStarterItemsKeys){
                     oStream.write(ItemGen.insertItem());
                 }else{
-                    oStream.write(ItemGen.insertItemAny());
+                    oStream.write(ItemGen.insertAnyItem());
                 }
             }else{
                 oStream.write(fileArray, offset, 1);
@@ -1216,7 +1216,7 @@ public class Generator {
             if(BStarterItemsKeys){
                 oStream.write(ItemGen.insertItem());
             }else{
-                oStream.write(ItemGen.insertItemAny());
+                oStream.write(ItemGen.insertAnyItem());
             }
         }else{
             oStream.write(fileArray, offset, 1);
@@ -1266,7 +1266,7 @@ public class Generator {
             if(BStarterItemsKeys){
                 oStream.write(ItemGen.insertItem());
             }else{
-                oStream.write(ItemGen.insertItemAny());
+                oStream.write(ItemGen.insertAnyItem());
             }
         }else{
             oStream.write(fileArray, offset, 1);
@@ -1316,7 +1316,7 @@ public class Generator {
             if(BStarterItemsKeys){
                 oStream.write(ItemGen.insertItem());
             }else{
-                oStream.write(ItemGen.insertItemAny());
+                oStream.write(ItemGen.insertAnyItem());
             }
         }else{
             oStream.write(fileArray, offset, 1);
@@ -1387,7 +1387,7 @@ public class Generator {
                 if(BStarterItemsKeys){
                     oStream.write(ItemGen.insertItem());
                 }else{
-                    oStream.write(ItemGen.insertItemAny());
+                    oStream.write(ItemGen.insertAnyItem());
                 }
             }else{
                 oStream.write(fileArray, offset, 1);
@@ -2243,7 +2243,7 @@ public class Generator {
             if(BStarterItemsKeys){
                 oStream.write(ItemGen.insertItem());
             }else{
-                oStream.write(ItemGen.insertItemAny());
+                oStream.write(ItemGen.insertAnyItem());
             }
         }else{
             oStream.write(fileArray, offset, 1);
@@ -2293,7 +2293,7 @@ public class Generator {
             if(BStarterItemsKeys){
                 oStream.write(ItemGen.insertItem());
             }else{
-                oStream.write(ItemGen.insertItemAny());
+                oStream.write(ItemGen.insertAnyItem());
             }
         }else{
             oStream.write(fileArray, offset, 1);
@@ -2343,7 +2343,7 @@ public class Generator {
             if(BStarterItemsKeys){
                 oStream.write(ItemGen.insertItem());
             }else{
-                oStream.write(ItemGen.insertItemAny());
+                oStream.write(ItemGen.insertAnyItem());
             }
         }else{
             oStream.write(fileArray, offset, 1);
